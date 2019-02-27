@@ -15,28 +15,8 @@
     urlcolor=cyan,
 }
 \setcounter{MaxMatrixCols}{30}
-\newtheorem{theorem}{Theorem}
-\newtheorem{acknowledgement}[theorem]{Acknowledgement}
-\newtheorem{algorithm}[theorem]{Algorithm}
-\newtheorem{axiom}{Axiom}
-\newtheorem{case}[theorem]{Case}
-\newtheorem{claim}[theorem]{Claim}
-\newtheorem{conclusion}[theorem]{Conclusion}
-\newtheorem{condition}[theorem]{Condition}
-\newtheorem{conjecture}[theorem]{Conjecture}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{criterion}[theorem]{Criterion}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{example}[theorem]{Example}
-\newtheorem{exercise}[theorem]{Exercise}
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{notation}[theorem]{Notation}
-\newtheorem{problem}[theorem]{Problem}
-\newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{remark}[theorem]{Remark}
-\newtheorem{solution}[theorem]{Solution}
-\newtheorem{summary}[theorem]{Summary}
 \newenvironment{proof}[1][Proof]{\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+
 
 \begin{document}
 
@@ -45,82 +25,38 @@
       \date{\today}
       \maketitle
 
-      \section*{Bayesian inference in simple conjugate families}
+	\section{Linear smoothing and Gaussian processes}
+		\subsection*{Curve fitting by linear smoothing}
+			Part A:
+			We begin with the linear regression equation:
+			   
+			$$y_i = \beta x_i + \epsilon_i$$
+			   
+			Recall that we derived the least-squares estimator for multiple regression:
 
-      \subsection*{A: Beta prior with Bernoulli sampling distribution}
+			$$\hat{\beta} = (X^TX)^{-1}X^Ty$$
 
-            \begin{equation}\label{eq:prior}
-                  p(w) = \frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}w^{a-1}(1-w)^{b-1}
-            \end{equation}
+			For the case with the means subtracted, this is equivalent to 
+				
+			$$\frac{\sum_{i=1}^{n}x_iy_i}{\sum_{i=1}^{n}x_i^2}$$
 
-            \begin{equation}\label{eq:likelihood}
-                  p(D|w) = \binom{n}{y} w^y (1 - w)^{n-y}
-            \end{equation}
+			Back to our regression equation for one value, but for an new point, $x^*$
 
-            \begin{equation}\label{eq:posterior_1}
-                  p(w|D) = p(w) \frac{p(D|w)}{p(D)} \propto p(w) p(D|w)
-            \end{equation}
+			$$\hat{y}^* = \hat{\beta}x^*$$
 
-            \begin{align}
-                  p(w|D) &\propto w^{a-1}(1-w)^{b-1}w^y(1-w)^{n-y} \\
-                  p(w|D) &\propto w^{a+y-1}(1-w)^{n+b-y-1} \\
-                  w|d &\sim \text{Beta}(a+y, n+b-y)
-            \end{align}
+			Note that the error term is excluded because it has mean zero. Substituting in         what we derived for $\hat{\beta}$:
+			$$\hat{y^*} =\frac{\sum_{i=1}^{n}x_iy_i}{\sum_{i=1}^{n}x_i^2}x^*$$
+
+			which can then be written like:
+
+			$$\hat{y}^* = \sum_{i=1}^{n}w(x_i,x^*)y_i$$
+			where
+			$$w(x_i,x^*)= \frac{\sum_{i=1}^{n}x_ix^*}{\sum_{i=1}^{n}x_i^2}$$
+			This smoothes the data by collapsing it to the least-squares regression line. The K-nearest-neighbor smoothing will conversely take the average of the K nearest points (by x).
 
 
-      \subsection*{B: Change of variables for a gamma random variable}
+			Part B	
 
-            \begin{equation}\label{eq:gamma}
-                  p(x) = \frac{b^a}{\Gamma(a)}x^{a-1} \text{exp}(-bx)
-            \end{equation}
 
-            \begin{align}
-                  x_1 &\sim \text{Ga}(a_1, 1)\\
-                  x_2 &\sim \text{Ga}(a_2, 1)
-            \end{align}
-
-            \begin{equation}\label{eq:x_joint}
-                  f_{\mathbf{X}}(x_1, x_2) = \frac{x^{a_1-1}}{\Gamma(a_1)}\frac{x^{a_2-1}}{\Gamma(a_2)}x_1^{a_1-1} x_2^{a_2-1} e^{-x_1}e^{-x_2}
-            \end{equation}
-
-            \begin{equation}\label{eq:change_variables}
-                  f_{\mathbf{Y}}(\mathbf{y}) = f_{\mathbf{X}}[\mathbf{h(y)}]\cdot|\text{det}(\nabla \mathbf{h(y}))|
-            \end{equation}
-
-            \begin{align}
-                  y_1 &= \frac{x_1}{(x_1+x_2)} \\
-                  y_2 &= x_1 + x_2
-            \end{align}
-
-            \begin{align}
-                  x_1 &= y_1 y_2 \\
-                  x_2 &= y_2 - y_1 y_2
-            \end{align}
-
-            \begin{equation}
-                  \text{det}(\nabla \mathbf{h(y)}) = \text{det}
-                  \begin{vmatrix}
-                  y_2 & y_1 \\
-                  -y_2 & 1-y_1
-                  \end{vmatrix}
-                  = y_2
-            \end{equation}
-
-            \begin{equation}
-                  f_{\mathbf{Y}}(y_1, y_2) = \frac{(y_1 y_2)^{a_1-1}}{\Gamma(a_1)}\frac{(y_2 (1-y_1))^{a_2-1}}{\Gamma(a_2)}(y_1 y_2)^{a_1-1} (y_2 (1-y_1))^{a_2-1} e^{-y_1 y_2}e^{-(y_2 - y_1 y_2)} y_2
-            \end{equation}
-
-            \begin{equation}
-                  f_{\mathbf{Y}}(y_1, y_2) = \frac{\Gamma(a_1 + a_2)}{\Gamma(a_1) \Gamma(a_2)} y_1^{a_1 -1} (1-y_1)^{a_2 - 1} \cdot \frac{1}{\Gamma(a_1 + a_2)} y_2^{a_1 + a_2 -1} e^{-y_2}
-            \end{equation}
-
-            \begin{align}
-                  y_1 &\sim \text{Beta}(a_1, a_2)\\
-                  y_2 &\sim \text{Ga}(a_1 + a_2, 1)
-            \end{align}
-
-      \subsection*{C: Normal prior and sampling distribution with unknown mean and known variance}
-
-      \subsection*{D: Normal prior and sampling distribution with known mean and unknown variance}
 
 \end{document}
