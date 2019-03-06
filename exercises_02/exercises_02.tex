@@ -1,0 +1,62 @@
+\documentclass[12pt]{article}%
+\usepackage{amsfonts}
+\usepackage{fancyhdr}
+\usepackage{comment}
+\usepackage[letterpaper, top=2.5cm, bottom=2.5cm, left=2.2cm, right=2.2cm]%
+{geometry}
+\usepackage{amsmath}
+\usepackage{changepage}
+\usepackage{enumitem}
+\usepackage{amssymb}
+\usepackage{graphicx}%
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,    
+    urlcolor=cyan,
+}
+\setcounter{MaxMatrixCols}{30}
+\newenvironment{proof}[1][Proof]{\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+
+
+\begin{document}
+
+      \title{SDS 383D, Chapter 3: }
+      \author{Tyler Buffington, tcb856}
+      \date{\today}
+      \maketitle
+
+	\section{Linear smoothing and Gaussian processes}
+		\subsection*{Curve fitting by linear smoothing}
+			Part A:
+			We begin with the linear regression equation:
+			   
+			$$y_i = \beta x_i + \epsilon_i$$
+			   
+			Recall that we derived the least-squares estimator for multiple regression:
+
+			$$\hat{\beta} = (X^TX)^{-1}X^Ty$$
+
+			For the case with the means subtracted, this is equivalent to 
+				
+			$$\frac{\sum_{i=1}^{n}x_iy_i}{\sum_{i=1}^{n}x_i^2}$$
+
+			Back to our regression equation for one value, but for an new point, $x^*$
+
+			$$\hat{y}^* = \hat{\beta}x^*$$
+
+			Note that the error term is excluded because it has mean zero. Substituting in         what we derived for $\hat{\beta}$:
+			$$\hat{y^*} =\frac{\sum_{i=1}^{n}x_iy_i}{\sum_{i=1}^{n}x_i^2}x^*$$
+
+			which can then be written like:
+
+			$$\hat{y}^* = \sum_{i=1}^{n}w(x_i,x^*)y_i$$
+			where
+			$$w(x_i,x^*)= \frac{\sum_{i=1}^{n}x_ix^*}{\sum_{i=1}^{n}x_i^2}$$
+			This smoothes the data by collapsing it to the least-squares regression line. The K-nearest-neighbor smoothing will conversely take the average of the K nearest points (by x).
+
+
+			Part B	
+
+
+
+\end{document}
