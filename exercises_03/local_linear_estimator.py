@@ -108,7 +108,6 @@ plt.scatter(x_data,y_data,marker='x')
 plt.plot(x_data,y_star,color='red')
 plt.plot(x_data,lower, color='red',linestyle='--')
 plt.plot(x_data,upper, color='red', linestyle='--')
-plt.show()
 plt.savefig('local_estimate')
 
 
