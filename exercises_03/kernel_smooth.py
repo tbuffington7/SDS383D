@@ -1,83 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pdb
+from methods import *
 
-
-def gaussian_kernel(x):
-    """
-
-    Takes in an array of x values and returns corresponding Gaussian kernel values
-
-    Parameters
-    ----------
-     x: array_like
-        An array of x values
-
-    Returns
-    -------
-    gaussian_kernel(x): array_like
-        An array of same length as x with corresponding kernel values
-
-    """
-    return np.array([1.0/(2.0*np.pi)**.5 * np.exp(-i**2/2) for i in x])
-
-def weight_calc(x, x_star, h, kernel_func=gaussian_kernel):
-    """
-
-    Evaluates the normalized weights for based on a kernel function
-
-    Parameters
-    ----------
-    x: array_like
-        the array of x values from the data
-    x_star: float
-        The x value corresponding to the desired prediction location
-    h: float
-        The bandwidth
-    kernel_func: function
-        The desired kernel function. Default is gaussian
-
-
-    Returns
-    -------
-    weight_calc: array_like
-        The weight of each x data point for the desired prediction location
-    """
-    raw_weights = 1.0/h*kernel_func((x-x_star)/h)
-    norm_weights =  np.array(raw_weights/np.sum(raw_weights))
-    return norm_weights
-
-def pred(x,y, x_star, h, kernel_func=gaussian_kernel):
-
-    """
-
-    Makes predictions for an array x_star for a given dataset of x and y
-
-    Parameters
-    ----------
-    x: array_like
-        the array of x values from the data
-    y: array_like
-        the array of corresponding y values
-    x_star: float
-        The x value corresponding to the desired prediction location
-    h: float
-        The bandwidth
-    kernel_func: function
-        The desired kernel function. Default is gaussian
-
-    Returns
-    -------
-    y_star: array_like
-        The predicted values corresponding to x_star
-    """
-
-    y_star = np.zeros(len(x_star))
-    for i, x_val in enumerate(x_star):
-        weights = weight_calc(x, x_val,h, kernel_func)
-        y_star[i] = weights@y #matrix multiplciation
-
-    return y_star
 
 #Create a vector of x values
 x = np.linspace(0,10,100)

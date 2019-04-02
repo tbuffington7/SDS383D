@@ -1,42 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pdb
-from kernel_smooth import weight_calc
-from kernel_smooth import gaussian_kernel
+from methods import *
 
-
-def error_calc(x1, x2):
-    """
-
-    Determines the mean squared error between two vectors.
-    x1 and x2 must be the same length
-
-    Parameters
-    ----------
-    x1 : array_like
-        The first array
-    x2: array_like
-        The second array
-
-    Returns
-    -------
-    mean_error: float
-        The average squared error between x1 and x2
-
-    Raises:
-    ------
-    ValueError
-        if the two arrays are not the same length
-    """
-    if len(x1) != len(x2):
-        raise ValueError('arrays must be the same length')
-
-    total_error = 0.0
-    for i in range(len(x1)):
-        total_error = total_error + (x1[i] - x2[i])**2
-
-    mean_error = total_error / float(len(x1))
-    return mean_error
 
 #Create a vector of x values. This is the training set.
 x = np.linspace(0,10,100)

@@ -1,10 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pdb
-from kernel_smooth import weight_calc
-from kernel_smooth import gaussian_kernel
-from kernel_smooth import pred
-from cross_validation import error_calc
+from methods import *
 
 #initializing an x array of a unit interval 
 x_vec = np.sort(np.random.uniform(size=500))
@@ -17,56 +14,6 @@ y['wiggly_low_noise'] = [np.sin(50*i) + np.random.normal(scale=0.05) for i in x_
 y['smooth_high_noise'] = [i**3 +  np.random.normal(scale=0.2) for i in x_vec]
 y['wiggly_high_noise'] = [np.sin(50*i) + np.random.normal(scale=0.2) for i in x_vec]
 
-def train_test_split(x,y, test_size=0.25):
-
-    """
-
-    Splits a dataset into a training and test set
-
-    Parameters
-    ----------
-    x: array_like
-        The x values for a dataset
-    y: array_like
-        The corresponding y values from the dataset
-    test_size: float
-        The fraction of the dataset to allocate to the test set
-
-    Returns
-    -------
-    train_x: array_like
-        The x values from the training set
-    train_y: array_like
-        The corresponding y values from the training set
-    test_x: array_like
-        The x values from the test set
-    test_y: array_like
-        The corresponding y values from the test set
-
-    Raises
-    ------
-    ValueError
-        when x and y are not the same length
-
-    """
-    if len(x) != len(y):
-        raise ValueError('x and y should be the same length')
-
-    #First determine the absolute number of points for the test set
-    test_size = int(round(test_size*len(x)))
-
-    #Randomly select indices for the test set
-    test_indices = np.random.choice(np.array(range(len(x))), test_size, replace=False)
-
-    #Then make the test set
-    test_x = np.array(x)[test_indices]
-    test_y = np.array(y)[test_indices]
-
-    #Then make the training set 
-    train_x = np.delete(np.array(x),test_indices)
-    train_y = np.delete(np.array(y),test_indices)
-
-    return train_x, train_y, test_x, test_y
 
 names = ['smooth_low_noise','smooth_high_noise', 'wiggly_low_noise','wiggly_high_noise']
 colors = ['black','black','red','red']
