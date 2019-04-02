@@ -16,16 +16,23 @@ mean = np.zeros(len(x))
 C = matern(x,10**-6,10**-6, 10**-6)
 plt.plot(x,np.random.multivariate_normal(mean,C))
 plt.savefig('base_case')
+plt.close()
 
 C = matern(x,10**-3,10**-6, 10**-6)
 plt.plot(x,np.random.multivariate_normal(mean,C))
 plt.savefig('increased_b')
+plt.close()
+
 
 C = matern(x,10**-6,10**-3, 10**-6)
 plt.plot(x,np.random.multivariate_normal(mean,C))
 plt.savefig('increased_tau1')
+plt.close()
+
 
 C = matern(x,10**-6,10**-6, 10**-3)
 plt.plot(x,np.random.multivariate_normal(mean,C))
 plt.savefig('increased_tau2')
+plt.close()
+
 
