@@ -103,7 +103,7 @@
     \label{fig:h_select}
     \end{figure}
 
-    the main features are that the noisy functions have higher errors at the optimal h, and the noise also increases the value for the optimal h. the optimal fits are shown for the four cases below in Figure \ref{results}
+    the main features are that the noisy functions have higher errors at the optimal h, and the noise also increases the value for the optimal h. the optimal fits are shown for the four cases below in Figure \ref{fig:results}
 
     \begin{figure}[!b]
     \begin{center}
@@ -218,12 +218,114 @@
 
         Let $s_1 = \sum_{i=1}^nw_i(x_i-x)$ and $s_2 = \sum_{i=1}^nw_i(x_i-x)^2$. So then we get:
 
-        $$\hat{f} = \frac{s_2\sum_{i=1}^ny_iw_i-s_1\sum_{i=1}^ny_iw_i(x_i-x)}{\sum_{i=1}^nw_is_2 - s_1\sum_{i=1}^nw_i(x_i-x)}$$
+        $$\hat{f} = \frac{s_2\sum_{i=1}^ny_iw_i-s_1\sum_{i=1}^ny_iw_i(x_i-x)}{\sum_{i=1}^nw_is_2 - s_1\sum_{i=1}\textbf{}^nw_i(x_i-x)}$$
 
         $$= \frac{\sum_{i=1}^ny_iw_i\big(s_2-s_1(x_i-x)\big)}{\sum_{i=1}^nw_i\big(s_2-s_1(x_i-x)\big)}$$
 
         Define $w_i^* = w_i\big(s_2 - s_1(x_i-x)\big)$, so then we get the desired form:
         $$\hat{f} = \frac{\sum_{i=1}^nw_i^*y_i}{\sum_{i=1}^nw_i^*}$$
+        \item
+        Let $q^T=[1,0...0]M$ so that $\hat{f}(x)=a_0=q^Ty$ First find the mean, 
+        $$E\big(\hat{f}(x)\big) = E\big(q^Ty\big)$$
+        $$=q^T E\big(y\big)$$
+        $$ = q^Tf(x)$$
+        Then find the variance (remembering the formula for linear transforms):
+        $$var(\hat{f}(x) = var(q^Ty)$$
+        $$=var\big(q^Tvar(y)q\big)$$
+        $$=q^T\sigma^2Iq$$
+        $$=\sigma^2q^Tq$$
+
+        \item
+        Begin with given equation:
+        $$E(\hat{\sigma}) = E\bigg(\frac{||r||_2^2}{n-2tr(H)+tr(H^TH)}\bigg)$$
+        $$=\frac{E\bigg[ (y-Hy)^T(y-Hy) \bigg]}{n-2tr(H)+tr(H^TH)}$$
+        $$=\frac{E\bigg[y^Ty-2y^TH^T+y^TH^THy\bigg]}{n-2tr(H)+tr(H^TH)}$$
+        Then by linearity:
+        $$=\frac{E\bigg[y^Ty\bigg]-E\bigg[2y^TH^T\bigg]+E\bigg[y^TH^THy\bigg]}{n-2tr(H)+tr(H^TH)}$$
+        Then using the given equation, this reduces to:
+        $$=\frac{tr(I\sigma^2)+f^T(x)f(x)--2\bigg(tr(H\sigma^2)+f^T(x)Hf(x)\bigg)+tr(H^TH\sigma^2)+f^T(x)H^THf(x)}{n-2tr(H)+tr(H^TH)}$$
+
+        $$=\frac{n\sigma^2+f^T(x)f(x)--2\bigg(tr(H\sigma^2)+f^T(x)Hf(x)\bigg)+tr(H^TH\sigma^2)+f^T(x)H^THf(x)}{n-2tr(H)+tr(H^TH)}$$
+
+        Factoring out $\sigma^2$:
+        $$=\frac{\sigma^2\bigg(n-2tr(H) + tr(H^TH)\bigg) + f^T(x)f(x) +2f^T(x)Hf(x)+f^T(x)H^THf(x)}{n-2tr(H)+tr(H^TH)}$$
+
+        $$=\sigma^2 + \frac{\bigg(f(x)+H(x)f(x)\bigg)^T\bigg(f(x)+H(x)f(x)\bigg)}{n-2tr(H)+tr(H^TH)}$$
+
+        $$=\underbrace{\sigma^2}_{I} + \underbrace{\frac{||f(x)+H(x)f(x)||}{n-2tr(H)+tr(H^TH)}}_{II}$$
+
+
+        Term $I$ represents the variance and term $II$ represents the bias. Therefore, to reduce the bias, one can simple increase the sample size (n).
+
+        \item
+        The relevant code can be found in "local\_linear\_estimator.py"
+
+        \item
+     	The residuals are plotted below in Figure \ref{fig:residual_plot}
+		\begin{figure}[htb] \centering
+		\includegraphics[width=0.95\textwidth]{./residual_plot.png}
+		\caption{A plot of the residuals vs. x}
+		\label{fig:residual_plot}
+		\end{figure}
+
+		The residuals seem to get smaller as x increases, which indicates a lack of homoskedacity.
+
+		\item
+		The plot with the confidence bands is shown below in Figure \
+     	The residuals are plotted below in Figure \ref{fig:local_linear_estimate}
+		\begin{figure}[htb] \centering
+		\includegraphics[width=0.95\textwidth]{./local_estimate.png}
+		\caption{The plot of the fit with confidence bands}
+		\label{fig:local_linear_estimate}
+		\end{figure}
+
+	\end{enumerate}
+		\section{Gaussian processes}
+        \begin{enumerate}[label=(\Alph*)]
+        \item This code is in gaussian\_process.py
+        In order to gain an intuition for the effect of each hyperparameter, I established a base case in which $b, \tau_1^2$, and $\tau_2^2$ were all set to $10^-6$. The resulting function is shown in Figure \ref{fig:base_case}. 
+        
+        
+        \begin{figure}[htb] \centering
+        \includegraphics[width=0.95\textwidth]{./base_case.png}
+        \caption{The base case from the matern covariance function}
+        \label{fig:base_case}
+        \end{figure}
+        
+        \begin{figure}[htb] \centering
+        \includegraphics[width=0.95\textwidth]{./increased_b.png}
+        \caption{the case with b increase to  $10^-3$}
+        \label{fig:increased_b}
+        \end{figure}
+        
+        \begin{figure}[htb] \centering
+        \includegraphics[width=0.95\textwidth]{./increased_tau1.png}
+        \caption{The base case from the matern covariance function}
+        \label{fig:increased_tau1}
+        \end{figure}
+        
+        \begin{figure}[htb] \centering
+        \includegraphics[width=0.95\textwidth]{./increased_tau2.png}
+        \caption{The base case from the matern covariance function}
+        \label{fig:increased_tau2}
+        \end{figure}
+        
+        
+        
+        
+        \item
+        \item
+        We can say that $y = R\theta + N(0,\Sigma)$ and that $\theta = I\theta + 0 N(0,\Sigma)$. We can express the equations like this:
+
+
+        $$\begin{bmatrix}y \\ \theta \end{bmatrix}
+        = \begin{bmatrix} R \\ I \end{bmatrix} \theta
+        +\begin{bmatrix} I \\ 0 \end{bmatrix} N(0,\Sigma)$$
+
+        $$=\begin{bmatrix} R & I \\ I & 0 \end{bmatrix}
+        \begin{bmatrix} \theta \\ N(0,\Sigma) \end{bmatrix}$$
+
+        Which is just an affine transformation of multivariate normal distributions, therefore, the joint, distribution $p(\big[y,\theta\big]^T)$ is also multivariate normal. 
 
     \end{enumerate}
 \end{document}
