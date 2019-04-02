@@ -250,3 +250,34 @@ def matern(x, b, tau_sq1, tau_sq2 ):
             cov_mat[i,j] = tau_sq1*np.exp(-.5*(np.linalg.norm([x1,x2])/b)**2)+tau_sq2*float(x1==x2)
     return cov_mat
 
+def matern52(x, b, tau_sq1, tau_sq2 ):
+
+    """
+
+    The matern 5/2 covariance function
+
+    Parameters
+    ----------
+    x : array_like
+        The points at which to evaluate the function
+    b : float
+        the first hyperparameter
+    tau_sq1: float
+        the second hype parameter
+    tau_sq2: float
+        the third hyperparameter
+
+    Returns
+    -------
+    cov_mat : array_like
+
+    """
+    cov_mat = np.zeros([len(x), len(x)])
+    sqrt5 = 5.0**.5
+    for i,x1 in enumerate(x):
+        for j,x2 in enumerate(x):
+            d = np.linalg.norm([x1,x2])
+            cov_mat[i,j] = tau_sq1*(1.0+sqrt5*d/b + 5*d**2/(3*b**2)) \
+                           *np.exp(-sqrt5*d/b)+ tau_sq2*float(x1==x2)
+
+    return cov_mat

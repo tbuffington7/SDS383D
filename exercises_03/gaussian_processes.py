@@ -36,3 +36,7 @@ plt.savefig('increased_tau2')
 plt.close()
 
 
+C = matern52(x,10**-6,10**-6, 10**-6)
+plt.plot(x,np.random.multivariate_normal(mean,C))
+plt.savefig('matern52_case')
+plt.close()
