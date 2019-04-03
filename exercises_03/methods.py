@@ -1,3 +1,4 @@
+import pdb
 import numpy as np
 import pandas as pd
 
@@ -281,3 +282,49 @@ def matern52(x, b, tau_sq1, tau_sq2 ):
                            *np.exp(-sqrt5*d/b)+ tau_sq2*float(x1==x2)
 
     return cov_mat
+
+def gp_predict(x_data, y_data, x_pred,sigma_2, b,tau_sq1, tau_sq2, prior_mean = 0.0, cov_fun=matern):
+    """
+
+    Returns predictions of the mean of the function distribution for a 
+    Gaussian process
+
+    Parameters
+    ----------
+    x_data : array_like
+        the x values from the data
+    y_data : array_like
+        the corresponding y values from the data
+    x_pred : array_like
+        the values at which predictions will be made
+    sigma_2 : float
+        the variance of the residuals
+    b: float
+        hyperparameter for the covariance function
+    tau_sq1: float
+        hyperparameter for the covariance function
+    tau_sq2: float
+        hyperparameter for the covariance function
+    prior_mean: float
+        the mean value for the gaussian process (becomes vectorized)
+    cov_fun: function
+        the function to use to generate the covariance matrix
+
+    Returns
+    -------
+    y_pred: array_like
+        the predicted y values that correspond to x_pred
+    cov: array_like
+        the covariance matrix for the estimate of f(x_star)
+    """
+    C = cov_fun(np.concatenate([x_data, x_pred]), b, tau_sq1, tau_sq2)
+    #Then we need to extract the partioned matricies
+    C_xx = C[:len(x_data), :len(x_data)]
+    C_xstarx = C[len(x_data):,:len(x_data)]
+    C_xstarxstar = C[len(x_data):,len(x_data):]
+    #then calculate the weight matrix
+    w=C_xstarx@np.linalg.inv((C_xx + np.eye(len(x_data))*sigma_2))
+    #finally calculate the predicted y values
+    y_pred = w@y_data
+    cov=C_xstarxstar - C_xstarx@np.linalg.inv(C_xx+np.eye(len(x_data))*sigma_2)@np.transpose(C_xstarx)
+    return y_pred, cov
