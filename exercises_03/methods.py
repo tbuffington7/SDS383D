@@ -1,6 +1,10 @@
+from __future__ import division
 import pdb
 import numpy as np
 import pandas as pd
+from scipy.stats import multivariate_normal
+from scipy.spatial.distance import euclidean
+
 
 def gaussian_kernel(x):
     """
@@ -248,7 +252,8 @@ def matern(x, b, tau_sq1, tau_sq2 ):
     cov_mat = np.zeros([len(x), len(x)])
     for i,x1 in enumerate(x):
         for j,x2 in enumerate(x):
-            cov_mat[i,j] = tau_sq1*np.exp(-.5*(np.linalg.norm([x1,x2])/b)**2)+tau_sq2*float(x1==x2)
+            d = euclidean(x1,x2)
+            cov_mat[i,j] = tau_sq1*np.exp(-.5*(d/b)**2)+tau_sq2*float(x1==x2)
     return cov_mat
 
 def matern52(x, b, tau_sq1, tau_sq2 ):
@@ -277,7 +282,7 @@ def matern52(x, b, tau_sq1, tau_sq2 ):
     sqrt5 = 5.0**.5
     for i,x1 in enumerate(x):
         for j,x2 in enumerate(x):
-            d = np.linalg.norm([x1,x2])
+            d = euclidean(x1,x2)
             cov_mat[i,j] = tau_sq1*(1.0+sqrt5*d/b + 5*d**2/(3*b**2)) \
                            *np.exp(-sqrt5*d/b)+ tau_sq2*float(x1==x2)
 
@@ -318,13 +323,49 @@ def gp_predict(x_data, y_data, x_pred,sigma_2, b,tau_sq1, tau_sq2, prior_mean = 
         the covariance matrix for the estimate of f(x_star)
     """
     C = cov_fun(np.concatenate([x_data, x_pred]), b, tau_sq1, tau_sq2)
-    #Then we need to extract the partioned matricies
-    C_xx = C[:len(x_data), :len(x_data)]
-    C_xstarx = C[len(x_data):,:len(x_data)]
-    C_xstarxstar = C[len(x_data):,len(x_data):]
+    #Then we need to extract the partioned matrices
+    #First C(x,x) =  C11
+    C_11 = C[:len(x_data), :len(x_data)]
+    C_21 = C[len(x_data):,:len(x_data)]
+    C_22 = C[len(x_data):,len(x_data):]
     #then calculate the weight matrix
-    w=C_xstarx@np.linalg.inv((C_xx + np.eye(len(x_data))*sigma_2))
+    w=C_21@np.linalg.inv((C_11 + np.eye(len(x_data))*sigma_2))
     #finally calculate the predicted y values
     y_pred = w@y_data
-    cov=C_xstarxstar - C_xstarx@np.linalg.inv(C_xx+np.eye(len(x_data))*sigma_2)@np.transpose(C_xstarx)
+    cov=C_22 - C_21@np.linalg.inv(C_11+np.eye(len(x_data))*sigma_2)@np.transpose(C_12)
     return y_pred, cov
+
+def log_likelihood(x_data, y_data, sigma_2, b, tau_sq1, tau_sq2 = 0.0, cov_fun=matern52):
+    """
+    Returns a quantity that is proportional to the log likelihood for a Gaussian process
+    Used to determine hyperparameters for the matern covariance functions
+
+    Parameters
+    ----------
+    x_data: array_like
+        x values from the data
+    y_data: array_like
+        corresponding y values
+    sigma_2: float
+        Variance of residuals
+    b: float
+        Hyperparameter
+    tau_sq1: float
+        Hyperparameter
+    tau_sq2: float
+        Hyperparameter
+    cov_fun: function
+        The covariance function to use
+    Returns
+    -------
+    log_like: float
+        Quantity proportional to the log likelihood
+
+    """
+    #First evaluate the covariance matrix:
+    C = cov_fun(x_data,b,tau_sq1, tau_sq2)
+    C2 = matern_52(x_data,x_data,[b,tau_sq1,tau_sq2])
+    pdb.set_trace()
+    p = multivariate_normal.logpdf(y_data, np.zeros(len(y_data)), sigma_2*np.eye(len(y_data))+C)
+    return p
+

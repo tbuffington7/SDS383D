@@ -13,30 +13,38 @@ mean = np.zeros(len(x))
 #tau2_sq = [10**-6, 1.0]
 
 
-C = matern(x,10**-6,10**-6, 10**-6)
+C = matern(x,.05,.01, 10**-6)
 plt.plot(x,np.random.multivariate_normal(mean,C))
+C = matern52(x,.05,.01, 10**-6)
+plt.plot(x,np.random.multivariate_normal(mean,C))
+plt.legend(['squared exponential', 'matern52'])
 plt.savefig('base_case')
 plt.close()
 
-C = matern(x,10**-3,10**-6, 10**-6)
+C = matern(x,.2,.01, 10**-6)
 plt.plot(x,np.random.multivariate_normal(mean,C))
+C = matern52(x,.2,.01, 10**-6)
+plt.plot(x,np.random.multivariate_normal(mean,C))
+plt.legend(['squared exponential', 'matern52'])
 plt.savefig('increased_b')
 plt.close()
 
 
-C = matern(x,10**-6,10**-3, 10**-6)
+C = matern(x,.05,1.0, 10**-6)
 plt.plot(x,np.random.multivariate_normal(mean,C))
+C = matern52(x,.05,1.0, 10**-6)
+plt.plot(x,np.random.multivariate_normal(mean,C))
+plt.legend(['squared exponential', 'matern52'])
 plt.savefig('increased_tau1')
 plt.close()
 
 
-C = matern(x,10**-6,10**-6, 10**-3)
+C = matern(x,.05,.01, 1.0)
 plt.plot(x,np.random.multivariate_normal(mean,C))
+C = matern52(x,.05,.01, 1.0)
+plt.plot(x,np.random.multivariate_normal(mean,C))
+plt.legend(['squared exponential', 'matern52'])
 plt.savefig('increased_tau2')
 plt.close()
 
 
-C = matern52(x,10**-6,10**-6, 10**-6)
-plt.plot(x,np.random.multivariate_normal(mean,C))
-plt.savefig('matern52_case')
-plt.close()

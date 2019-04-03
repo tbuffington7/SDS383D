@@ -1,12 +1,13 @@
+from __future__ import division
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import pdb
 from methods import *
 import seaborn as sns
+from tqdm import tqdm
 
 df = pd.read_csv('utilities.csv')
-df = df.sort_values('temp')
 x = np.array(df['temp'].copy()).astype(float)
 y = np.array(df['gasbill']/df['billingdays'])
 sigma_2 = 1
@@ -30,3 +31,15 @@ plt.scatter(x,y,marker='x', color='mediumvioletred')
 plt.xlabel('Average temperature ($^o$ F)')
 plt.ylabel('Average daily cost (USD)')
 plt.savefig('confidence_band')
+plt.close()
+
+n = 10
+b_vec = np.linspace(40,80,n)
+tau_vec = np.linspace(20,80,n)
+p = np.zeros((n,n))
+for i,b in tqdm(enumerate(b_vec)):
+    for j,tau in enumerate(tau_vec):
+        p[i,j] = log_likelihood(x, y, sigma_2, b, tau)
+
+pdb.set_trace()
+
