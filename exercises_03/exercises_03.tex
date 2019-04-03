@@ -378,13 +378,82 @@
     $$w = C(x,x^*)\big[C(x,x) + I\sigma^2]^{-1}$$
     
     \item
-    The plot of 
+    The the scatterplot with the confidence bands is shown in Figure \ref{fig:confidence_band}.
     
     \begin{figure}[htb] \centering
-    \includegraphics[width=0.95\textwidth]{./matern52_case.png}
+    \includegraphics[width=0.95\textwidth]{./confidence_band.png}
     \caption{The base case with the matern 5/2 function}
-    \label{fig:matern52_case}
+    \label{fig:confidence_band}
     \end{figure}
+    
+    \item
+    The general approach is to solve for $p(y)$ by integrating out $f(x)$ from the joint distribution $p(y,f(x)$. For simplicity, we will abbreviate the vector $f(x)$ as simply f. $$p(y) = \int_{\mathbb{R}^n}p(y,f)df = \int_{\mathbb{R}^n}p(y|f)p(f)df $$
+    
+    $$\propto
+    \int_{\mathbb{R}^n}
+    exp\Bigg[-\frac{1}{2}\bigg([y-f]^T\big(\frac{1}{\sigma^2}I\big)[y-f] + \frac{1}{2}f^TC^{-1}f\bigg)\Bigg]df$$
+    
+    $$= 
+    \int_{\mathbb{R}^n}
+    exp\Bigg[-\frac{1}{2}\bigg(
+    y^T \big(\frac{1}{\sigma^2}I\big) y - 
+    2y^T \big(\frac{1}{\sigma^2}I\big) f +
+    f^T \big(\frac{1}{\sigma^2}I\big) f +
+    f^T C^{-1} f
+    \bigg)\Bigg]df$$
+    
+    $$=
+    \int_{\mathbb{R}^n}
+    exp\Bigg[-\frac{1}{2}\bigg(
+    \underbrace{f^T \big(\frac{1}{\sigma^2}I + C^{-1}\big)
+    - 2y^T \big(\frac{1}{\sigma^2}I\big) f}_{I} +
+    y^T \big(\frac{1}{\sigma^2}I\big) y
+    \bigg)\Bigg]df$$
+    
+    Recognize that term I lends itself to completing the square. Recall that in matrix form completing the square is done according to the following formula:
+    
+    $$f^TMx - 2b^Tf = (f-M^{-1}b)^TM(f-M^{-1}b) - b^TM^{-1}b$$
+    From inspection in term I, we can see that $M = \frac{1}{\sigma^2}I + C^{-1}$ and $b^T = y^T(\frac{1}{\sigma^2}I)$. So then expanding term I we get
+    
+    $$p(y) \propto
+    \int_{\mathbb{R}^n}
+    exp\Bigg[-\frac{1}{2}\bigg(
+    \underbrace{(f-M^{-1}b)^TM(f-M^{-1}b)}_{II} - b^TM^{-1}b +
+    y^T \big(\frac{1}{\sigma^2}I\big) y
+    \bigg)\Bigg]df$$
+    
+    Recognize that term II is the kernal of a multivariate normal distribution defined over f, which must integrate to a constant. So we get:
+    
+    $$p(y) \propto
+    exp\Bigg[-\frac{1}{2}\bigg(- b^TM^{-1}b +
+    y^T \big(\frac{1}{\sigma^2}I\big) y
+    \bigg)\Bigg]$$
+    
+    $$=
+    exp\Bigg[-\frac{1}{2}\bigg(y^T \big(\frac{1}{\sigma^2}I\big) y- y^T(\frac{1}{\sigma^2}I)
+    \bigg[\frac{1}{\sigma^2}I + C^{-1}\bigg]^{-1}   (\frac{1}{\sigma^2}I)y 
+    \bigg)\Bigg]$$
+    
+    $$=
+    exp\Bigg[-\frac{1}{2}y^T
+    \bigg(\big(\frac{1}{\sigma^2}I\big)-(\frac{1}{\sigma^2}I)
+    \bigg[\frac{1}{\sigma^2}I + C^{-1}\bigg]^{-1}   (\frac{1}{\sigma^2}I)
+    \bigg)y\Bigg]$$
+    
+    Recall the following matrix theorem:
+    $$\bigg(A^{-1} + B^{-1}\bigg)^{-1} = 
+    A - A(A+B)^{-1}A$$
+    
+    In our case, $A=\big(\frac{1}{\sigma^2}I\big)$ and $B=C^{-1}$. So then we get
+    
+    $$p(y) \propto
+    exp\Bigg[-\frac{1}{2}y^T\bigg[\sigma^2I + C\bigg]^{-1}
+    y\Bigg]$$
+    
+    which is then just a multivariate normal kernel, i.e.
+    $$y \sim N\Bigg(0, \sigma^2 I + C\Bigg)$$
+    
+    \item
     
     
     
