@@ -283,7 +283,7 @@
 		\section{Gaussian processes}
         \begin{enumerate}[label=(\Alph*)]
         \item This code is in gaussian\_process.py
-        In order to gain an intuition for the effect of each hyperparameter, I established a base case in which $b, \tau_1^2$, and $\tau_2^2$ were all set to $10^-6$. The resulting function is shown in Figure \ref{fig:base_case}. 
+        In order to gain an intuition for the effect of each hyperparameter, I established a base case in which $b, \tau_1^2$, and $\tau_2^2$ were all set to $10^-6$. The resulting function is shown in Figure \ref{fig:base_case}. I also made plots in which each hyperparameter is increased to $10^-3$ to examine the effects of each. These are shown in Figures \ref{fig:increased_b}, \ref{fig:increased_tau1}, and \ref{fig:increased_tau2}. The effect of increasing the bandwidth, b, is that is slightly smooths the function as expected. Increasing $\tau_1^2$ also serves to smooth the function because it amplifies the off-diagonal covariance terms. Converesly, increasing $\tau_2^2$ makes the function more noisy because it increases the on-diagonal covariance terms. 
         
         
         \begin{figure}[htb] \centering
@@ -294,19 +294,19 @@
         
         \begin{figure}[htb] \centering
         \includegraphics[width=0.95\textwidth]{./increased_b.png}
-        \caption{the case with b increase to  $10^-3$}
+        \caption{the case with b increased to  0.001}
         \label{fig:increased_b}
         \end{figure}
         
         \begin{figure}[htb] \centering
         \includegraphics[width=0.95\textwidth]{./increased_tau1.png}
-        \caption{The base case from the matern covariance function}
+        \caption{The case with $\tau_1$ increased to 0.001}
         \label{fig:increased_tau1}
         \end{figure}
         
         \begin{figure}[htb] \centering
         \includegraphics[width=0.95\textwidth]{./increased_tau2.png}
-        \caption{The base case from the matern covariance function}
+        \caption{The case with $\tau_2$ increased to 0.001}
         \label{fig:increased_tau2}
         \end{figure}
         
