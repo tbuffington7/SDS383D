@@ -332,10 +332,10 @@ def gp_predict(x_data, y_data, x_pred,sigma_2, b,tau_sq1, tau_sq2, prior_mean = 
     w=C_21@np.linalg.inv((C_11 + np.eye(len(x_data))*sigma_2))
     #finally calculate the predicted y values
     y_pred = w@y_data
-    cov=C_22 - C_21@np.linalg.inv(C_11+np.eye(len(x_data))*sigma_2)@np.transpose(C_12)
+    cov=C_22 - C_21@np.linalg.inv(C_11+np.eye(len(x_data))*sigma_2)@np.transpose(C_21)
     return y_pred, cov
 
-def log_likelihood(x_data, y_data, sigma_2, b, tau_sq1, tau_sq2 = 0.0, cov_fun=matern52):
+def log_likelihood(x_data, y_data, sigma_2, b, tau_sq1, tau_sq2 = 0.0, cov_fun=matern):
     """
     Returns a quantity that is proportional to the log likelihood for a Gaussian process
     Used to determine hyperparameters for the matern covariance functions
@@ -364,8 +364,6 @@ def log_likelihood(x_data, y_data, sigma_2, b, tau_sq1, tau_sq2 = 0.0, cov_fun=m
     """
     #First evaluate the covariance matrix:
     C = cov_fun(x_data,b,tau_sq1, tau_sq2)
-    C2 = matern_52(x_data,x_data,[b,tau_sq1,tau_sq2])
-    pdb.set_trace()
     p = multivariate_normal.logpdf(y_data, np.zeros(len(y_data)), sigma_2*np.eye(len(y_data))+C)
     return p
 
