@@ -282,7 +282,7 @@
 		\section{Gaussian processes}
         \begin{enumerate}[label=(\Alph*)]
         \item This code is in gaussian\_process.py
-        In order to gain an intuition for the effect of each hyperparameter, I established a base case in which $b, \tau_1^2$, and $\tau_2^2$ were all set to $10^-6$. The resulting function is shown in Figure \ref{fig:base_case}. I also made plots in which each hyperparameter is increased to $10^-3$ to examine the effects of each. These are shown in Figures \ref{fig:increased_b}, \ref{fig:increased_tau1}, and \ref{fig:increased_tau2}. The effect of increasing the bandwidth, b, is that is slightly smooths the function as expected. Increasing $\tau_1^2$ also serves to smooth the function because it amplifies the off-diagonal covariance terms. Conversely, increasing $\tau_2^2$ makes the function more noisy because it increases the on-diagonal covariance terms. The result from the matern 5/2 covariance function is shown in Figure \ref{fig:matern52_case} for the same arguments as described in the base case. The matern 5/2 function looks similar to the squared exponential, but it is slightly smoother as the fluctuations occur on wider intervals. 
+        In order to gain an intuition for the effect of each hyperparameter, I established a base case in which $b$ was set to 0.05, $\tau_1^2$ was set to 0.01, and $\tau_2^2$ was set to $10^-6$. The resulting function is shown in Figure \ref{fig:base_case}. I also made plots in which each hyperparameter is increased to examine the effects of each. These are shown in Figures \ref{fig:increased_b}, \ref{fig:increased_tau1}, and \ref{fig:increased_tau2}. The effect of increasing the bandwidth, b, is that is slightly smooths the function as expected. Increasing $\tau_1^2$ also serves to smooth the function because it amplifies the off-diagonal covariance terms. Conversely, increasing $\tau_2^2$ makes the function more noisy because it increases the on-diagonal covariance terms. Also shown is a comparison with the matern 5/2 function. In general, it appears that the squared exponential term is slightly smoother for the same hyperparameters. 
         
      \begin{figure}[!b]
         \begin{center}
@@ -290,28 +290,22 @@
         \subfloat[base case]{%
           \label{fig:base_case} \includegraphics[width=7cm,keepaspectratio]{./base_case.png}
         }%
-        \subfloat[increased b]{%
+        \subfloat[increased b to 0.2]{%
          \label{fig:increased_b} \includegraphics[width=7cm,keepaspectratio]{./increased_b.png}
         }\\ %  ------- end of the first row ----------------------%
-        \subfloat[increased $tau_1^2$]{%
+        \subfloat[increased $tau_1^2$ to 1.0]{%
           \label{fig:increased_tau1} \includegraphics[width=7cm,keepaspectratio]{./increased_tau1.png}
         }%
-        \subfloat[increased $tau_2^2$]{%
+        \subfloat[increased $tau_2^2$ to 1.0]{%
          \label{fig:increased_tau2} \includegraphics[width=7cm,keepaspectratio]{./increased_tau2.png}
         }\\ %  ------- end of the second row ----------------------%
 
     \end{center}
-    \caption{The fits at the optimal h for the four cases.}
+    \caption{Comparison of the covariance functions and the effects of each hyperparameter}
     \label{fig:hyperparams}
     \end{figure}
     \clearpage
 
-        
-    \begin{figure}[htb] \centering
-    \includegraphics[width=0.95\textwidth]{./matern52_case.png}
-    \caption{The base case with the matern 5/2 function}
-    \label{fig:matern52_case}
-    \end{figure}
     
         \item
         To begin, we can recognize that we can write the joint distribution like this:
